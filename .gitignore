@@ -1,0 +1,5 @@
+# disable syncing node packages
+node_modules
+
+# do not upload my secret key stuff
+rootkey.csv
