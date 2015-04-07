@@ -1,12 +1,26 @@
 var exec = require('child_process').exec;
+var fs = require('fs');
 var amazon = require('amazon-product-api');
 var aws =require('aws-lib');
+
+function loadCredentials(filename) {
+  var credentials = {};
+  fs.readFile(filename, 'utf8', function(err, data){
+    if(err) {
+      console.log('Error: ' + err);
+    } else {
+      data = data.split('\r');
+      credentials.id = data[0].substr(data[0].indexOf('=') + 1, data[0].length);
+      credentials.key = data[1].substr(data[1].indexOf('=') + 1, data[1].length);
+    }
+  });
+}
 
 function getParametersFromQuery(path) {
   // delete the leading '/'
   path = path.substr(1,path.length);
   var parameterList = path.split(';');
-  
+
   // creates an object with all the parameters of the url query
   var parameters = {};
   for(var i = 0; i < parameterList.length; i++) {
@@ -19,6 +33,7 @@ function getParametersFromQuery(path) {
 
 function start(response,pathname) {
   var parameterList = getParametersFromQuery(pathname);
+  loadCredentials('rootkey.csv')
 
   console.log('Request handler "start" was called.');
 
